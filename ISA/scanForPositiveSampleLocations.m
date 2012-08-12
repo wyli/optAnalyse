@@ -1,5 +1,5 @@
 function [ image3d, locations ] =...
-    scanForPositiveSampleLocations( image3d, window3d, step )
+        scanForPositiveSampleLocations( image3d, window3d, step )
 % scanForCuboids looking for cuboids locations in the 3d image
 % RETURN 3d images and locations
 % e.g.:
@@ -8,27 +8,30 @@ function [ image3d, locations ] =...
 % Wenqi Li
 
 
-sizeOfImage = size(image3d);
-frameInx = zeros(200, 1);
-x = 0;
-for i = 1:sizeOfImage(3)  % in the direction of frames
-    if(find(image3d(:,:,i)))  % if there are annotations
-        x = x + 1;
-        frameInx(x) = i;
-    end
-end
-clear i x;
+%sizeOfImage = size(image3d);
+%frameInx = zeros(200, 1);
+%x = 0;
+%for i = 1:sizeOfImage(3)  % in the direction of frames
+    %% TODO: change with 'unique'
+    %if(find(image3d(:,:,i)))  % if there are annotations
+        %x = x + 1;
+        %frameInx(x) = i;
+    %end
+%end
+%clear i x;
+[~, ~, frameInx] = find(image3d);
+frameInx = unique(frameInx);
 
 locations = [];
 window3d = floor(window3d./2);
-for i = 2:200
+for i = 2:size(frameInx,1);
     if (frameInx(i) < 1)
         continue;
     end
     if frameInx(i-1) - window3d(3) < 1
         continue;
     end
-    
+
     startFrame = frameInx(i-1);
     [xs ys] = find(image3d(:,:,startFrame));
     xLow = min(xs);
@@ -36,7 +39,7 @@ for i = 2:200
     yLow = min(ys);
     yHigh = max(ys);
     fprintf('size: %dx%d', xHigh-xLow, yHigh-yLow);
-    
+
     for x = xLow:step(1):xHigh
         for y = yLow:step(2):yHigh
             try
@@ -46,7 +49,8 @@ for i = 2:200
                     % locations of positive examples.
                     locations = [locations; [x y startFrame]];
                 end
-            catch exception
+            catch e
+                warning(e.identifier, 'In scanForPositiveSampleLocations');
                 % do nothing
             end
         end
@@ -57,7 +61,10 @@ if isempty(locations)
         'Cannot find any continuous annotations');
     throw(err);
 end
-end
+end % end of function
+
+
+% debugging for visualise ROI
 % figure;
 % colormap(gray);
 % imagesc(image3d(:,:,108));
@@ -65,7 +72,7 @@ end
 % l = locations(i,:);
 % if l(3) == 108
 % rectangle('Position',...
-% [l(2)-window3d(2), l(1)-window3d(1),window3d(2)*2, window3d(1)*2],'FaceColor', 'r');
+    % [l(2)-window3d(2), l(1)-window3d(1),window3d(2)*2, window3d(1)*2],'FaceColor', 'r');
 % end
 % end
 %

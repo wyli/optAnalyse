@@ -25,4 +25,4 @@ for i = 1:size(xmlFiles, 1)
     save(cuboidSet, 'cuboid');
     clear cuboid
 end
-end
+end % end of function
