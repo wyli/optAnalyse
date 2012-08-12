@@ -12,7 +12,6 @@ step3d = window3d;
 
 for i = 1:size(xmlFiles, 1)
     cuboid = {};
-
     rec = VOCreadxml([xmlSet '/' xmlFiles(i).name]);
     name = rec.annotation.index;
     for p = 1:size(rec.annotation.part, 2)

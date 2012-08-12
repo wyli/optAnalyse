@@ -38,8 +38,8 @@ for i = 1:size(recordFile, 1)
 end
 
 % scale & rotate
-savingSeg = '/Volumes/data/OPTfinal/OPTmix/Annotated/%s%s';
-savingOri = '/Volumes/data/OPTfinal/OPTmix/Images/%s%s';
+savingSeg = '~/desktop/OPTmix/Annotated/%s%s';
+savingOri = '~/desktop/OPTmix/Images/%s%s';
 for i = 1:size(recordFile, 1)
     rec = VOCreadxml([recordSet, recordFile(i).name]);
     name = rec.annotation.index;
@@ -60,7 +60,7 @@ for i = 1:size(recordFile, 1)
         segImg = tempImg;
         clear tempImg;
         % rotate segmentation if needed
-        if rec.annotation.needRotate{p}
+        if rec.annotation.needRotate{p} == '1'
             fprintf(fid, '%s rotating %s%s\n', datestr(now), name, part);
             segImg = affine(segImg, rotateMat);
         end
@@ -84,7 +84,7 @@ for i = 1:size(recordFile, 1)
         clear oriFile;
 
         % rotate image if needed
-        if rec.annotation.needRotate{p}
+        if rec.annotation.needRotate{p} == '1'
             fprintf(fid, '%s rotating %s%s\n', datestr(now), name, part);
             oriImg = affine(oriImg, rotateMat);
         end
