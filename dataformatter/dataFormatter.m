@@ -53,9 +53,8 @@ for i = 1:size(recordFile, 1)
         clear segFile;
         % scale segmentation
         fprintf(fid, '%s scaling %s%s\n', datestr(now), name, part);
-        tempImg = [];
+        tempImg = zeros(size(segImg,1)*2, size(segImg,2)*2, size(segImg,3));
         for n = 1:size(segImg, 3)
-            fprintf(fid, '%s resizing %s%s\n', datestr(now), name, part);
             tempImg(:,:,n) = imresize(segImg(:,:,n), 2);
         end
         segImg = tempImg;
@@ -66,9 +65,9 @@ for i = 1:size(recordFile, 1)
             segImg = affine(segImg, rotateMat);
         end
         % to binary image
-        tempImg = [];
+        tempImg = zeros(size(segImg));
         for n = 1:size(tempImg, 3)
-            tempImg(:,:,n) = imresize(segImg(:,:,n), 0.5);
+            tempImg(:,:,n) = im2bw(segImg(:,:,n), 0.5);
         end
         segImg = tempImg;
         clear tempImg;
