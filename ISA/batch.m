@@ -3,7 +3,7 @@ imgSet = '~/desktop/OPTmix';
 needDrawSamples = 1;
 needSplitSet = 0;
 needTrainBases = 0;
-needExtractFeatures = 1;
+needExtractFeatures = 0;
 needClassifyVectors = 0;
 
 id = '20120812T005342';

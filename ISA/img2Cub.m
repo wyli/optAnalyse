@@ -8,7 +8,7 @@ load(segFile);
 % get interesting locations
 [~, locations3d] = scanForPositiveSampleLocations(...
 					segImg, windowSize, step);
-fprintf('=== Found %d positive locations ===\n', length(locations3d));
+fprintf('Found %d positive locations\n', length(locations3d));
 randIndex = randsample(size(locations3d,1), min(size(locations3d,1), numOfSamples));
 fprintf('Randomly choose %d\n', min(size(locations3d,1), numOfSamples));
 for loc = 1:size(randIndex,1)

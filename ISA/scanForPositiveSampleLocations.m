@@ -36,22 +36,6 @@ for i = 2:200
     yLow = min(ys);
     yHigh = max(ys);
     fprintf('size: %dx%d', xHigh-xLow, yHigh-yLow);
-    %xLow = 1;
-    %while ~any(image3d(xLow,:,startFrame))
-    %xLow = xLow + 1;
-    %end
-    %xHigh = sizeOfImage(1);
-    %while ~any(image3d(xHigh,:,startFrame))
-    %xHigh = xHigh - 1;
-    %end
-    %yLow = 1;
-    %while ~any(image3d(:,yLow,startFrame))
-    %yLow = yLow + 1;
-    %end
-    %yHigh = sizeOfImage(2);
-    %while ~any(image3d(:,yHigh,startFrame))
-    %yHigh = yHigh - 1;
-    %end
     
     for x = xLow:step(1):xHigh
         for y = yLow:step(2):yHigh
