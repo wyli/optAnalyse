@@ -60,7 +60,7 @@ for i = 1:size(recordFile, 1)
         segImg = tempImg;
         clear tempImg;
         % rotate segmentation if needed
-        if rec.annotation.needRotate{P}
+        if rec.annotation.needRotate{p}
             fprintf(fid, '%s rotating %s%s\n', datestr(now), name, part);
             segImg = affine(segImg, rotateMat);
         end
