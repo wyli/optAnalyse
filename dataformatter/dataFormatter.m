@@ -1,3 +1,5 @@
+fid = fopen('~/desktop/converting.log', 'w');
+fprintf(fid, '%s start converting...\n', datestr(now));
 % Load XML file.
 recordSet = '/Volumes/data/OPTfinal/description/';
 recordFile = dir([recordSet '*.xml']);
@@ -12,15 +14,19 @@ for i = 1:size(recordFile, 1)
     name = rec.annotation.index;
     for p = 1:size(rec.annotation.part, 2)
         part = rec.annotation.part{p};
+        fprintf(fid, '%s checking %s%s\n', name, part);
         segFile = sprintf(segSet,...
-            rec.annotation.dataset, name, part)
+            rec.annotation.dataset, name, part);
         segFile = load_nii(segFile);
         segImg = segFile.img;
         try
             scanForPositiveSampleLocations(segImg, [15,15,15], [5,5,5]);
+            rec.annotation.needRotate{p} = 0;
+            VOCwritexml(rec, '~/desktop/a.xml');
             clear segImg;
         catch e
             if strcmp(e.identifier, 'OPT:nolocation')
+                fprintf(fid, '%s writing %s%s\n', name, part);
                 rec.annotation.needRotate{p} = 1;
                 VOCwritexml(rec,'~/desktop/a.xml');% [recordSet, recordFile(i).name]);
             end
@@ -43,14 +49,17 @@ for i = 1:size(recordFile, 1)
         segImg = segFile.img;
         clear segFile;
         % scale segmentation
+        fprintf(fid, '%s scaling %s%s\n', name, part);
         tempImg = [];
         for n = 1:size(segImg, 3)
+            fprintf(fid, '%s resizing %s%s\n', name, part);
             tempImg(:,:,n) = imresize(segImg(:,:,n), 2);
         end
         segImg = tempImg;
         clear tempImg;
         % rotate segmentation if needed
         if rec.annotation.needRotate{P}
+            fprintf(fid, '%s rotating %s%s\n', name, part);
             segImg = affine(segImg, rotateMat);
         end
         % to binary image
@@ -74,6 +83,7 @@ for i = 1:size(recordFile, 1)
 
         % rotate image if needed
         if rec.annotation.needRotate{p}
+            fprintf(fid, '%s rotating %s%s\n', name, part);
             oriImg = affine(oriImg, rotateMat);
         end
         oriImg = uint8(oriImg);
