@@ -14,7 +14,7 @@ for i = 1:size(recordFile, 1)
     name = rec.annotation.index;
     for p = 1:size(rec.annotation.part, 2)
         part = rec.annotation.part{p};
-        fprintf(fid, '%s checking %s%s\n', name, part);
+        fprintf(fid, '%s checking %s%s\n',datestr(now), name, part);
         segFile = sprintf(segSet,...
             rec.annotation.dataset, name, part);
         segFile = load_nii(segFile);
@@ -22,13 +22,16 @@ for i = 1:size(recordFile, 1)
         try
             scanForPositiveSampleLocations(segImg, [15,15,15], [5,5,5]);
             rec.annotation.needRotate{p} = 0;
-            VOCwritexml(rec, '~/desktop/a.xml');
+            fprintf(fid, '%s no rotate writing %s%s\n',...
+                datestr(now), name, part);
+            VOCwritexml(rec, [recordSet, recordFile(i).name]);
             clear segImg;
         catch e
             if strcmp(e.identifier, 'OPT:nolocation')
-                fprintf(fid, '%s writing %s%s\n', name, part);
+                fprintf(fid, '%s rotate writing %s%s\n',...
+                   datestr(now), name, part);
                 rec.annotation.needRotate{p} = 1;
-                VOCwritexml(rec,'~/desktop/a.xml');% [recordSet, recordFile(i).name]);
+                VOCwritexml(rec, [recordSet, recordFile(i).name]);% [recordSet, recordFile(i).name]);
             end
         end
     end
@@ -49,17 +52,17 @@ for i = 1:size(recordFile, 1)
         segImg = segFile.img;
         clear segFile;
         % scale segmentation
-        fprintf(fid, '%s scaling %s%s\n', name, part);
+        fprintf(fid, '%s scaling %s%s\n', datestr(now), name, part);
         tempImg = [];
         for n = 1:size(segImg, 3)
-            fprintf(fid, '%s resizing %s%s\n', name, part);
+            fprintf(fid, '%s resizing %s%s\n', datestr(now), name, part);
             tempImg(:,:,n) = imresize(segImg(:,:,n), 2);
         end
         segImg = tempImg;
         clear tempImg;
         % rotate segmentation if needed
         if rec.annotation.needRotate{P}
-            fprintf(fid, '%s rotating %s%s\n', name, part);
+            fprintf(fid, '%s rotating %s%s\n', datestr(now), name, part);
             segImg = affine(segImg, rotateMat);
         end
         % to binary image
@@ -83,7 +86,7 @@ for i = 1:size(recordFile, 1)
 
         % rotate image if needed
         if rec.annotation.needRotate{p}
-            fprintf(fid, '%s rotating %s%s\n', name, part);
+            fprintf(fid, '%s rotating %s%s\n', datestr(now), name, part);
             oriImg = affine(oriImg, rotateMat);
         end
         oriImg = uint8(oriImg);
@@ -93,3 +96,4 @@ for i = 1:size(recordFile, 1)
         clear oriImg;
     end
 end
+fclose(fid);
