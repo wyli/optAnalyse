@@ -1,18 +1,20 @@
+addpath('~/documents/optAnalyse/libsvm');
+addpath('~/documents/optAnalyse/liblinear');
 xmlSet = '~/desktop/description';
 imgSet = '~/desktop/OPTmix';
 needDrawSamples = 0;
 needTrainBases = 0;
-needExtractFeatures = 1;
-needClassifyVectors = 0;
+needExtractFeatures = 0;
+needClassifyVectors = 1;
 
-id = '20120812T005342';
+id = '';
 baseFile = '~/desktop/output';
 if isempty(id)
     id = datestr(now, 30);
 end
 outputSet = sprintf('%s/exp_%s', baseFile, id);
 mkdir(outputSet);
-diary([outputSet '/exp.log']);
+%diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples
@@ -38,4 +40,9 @@ end
 % extract features from train, validation, test set
 if needExtractFeatures
     extractISAFeatures(xmlSet, outputSet, [windowSizeL1, windowSizeL2]);
+end
+
+% classify vectors
+if needClassifyVectors
+    classifyVectors(xmlSet, outputSet, {trainInd; validInd; testInd});
 end

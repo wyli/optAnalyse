@@ -5,7 +5,7 @@ xmlFiles = dir([xmlSet '/*.xml']);
 cuboidSet = [outputSet '/cuboid_%d/'];
 % output
 mkdir([outputSet '/feaSet/']);
-feaSet = [outputSet '/feaSet/%s%s'];
+feaSet = [outputSet '/feaSet/%s'];
 network_params = set_network_params(windowSize);
 network = build_network(network_params, 2, [outputSet '/']);
 
