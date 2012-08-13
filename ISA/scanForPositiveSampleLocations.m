@@ -8,37 +8,25 @@ function [ image3d, locations ] =...
 % Wenqi Li
 
 
-%sizeOfImage = size(image3d);
-%frameInx = zeros(200, 1);
-%x = 0;
-%for i = 1:sizeOfImage(3)  % in the direction of frames
-    %% TODO: change with 'unique'
-    %if(find(image3d(:,:,i)))  % if there are annotations
-        %x = x + 1;
-        %frameInx(x) = i;
-    %end
-%end
-%clear i x;
-[~, ~, frameInx] = find(image3d);
+sizeOfImg = size(image3d);
+index = find(image3d);
+[~, ~, frameInx] = ind2sub(size(image3d), index);
 frameInx = unique(frameInx);
 
 locations = [];
 window3d = floor(window3d./2);
-for i = 2:size(frameInx,1);
-    if (frameInx(i) < 1)
-        continue;
-    end
-    if frameInx(i-1) - window3d(3) < 1
+for i = 1:size(frameInx,1);
+    if (frameInx(i) - window3d(3) < 1) ||...
+            (frameInx(i) + window3d(3) > sizeOfImg(3))
         continue;
     end
 
-    startFrame = frameInx(i-1);
+    startFrame = frameInx(i);
     [xs ys] = find(image3d(:,:,startFrame));
-    xLow = min(xs);
-    xHigh = max(xs);
-    yLow = min(ys);
-    yHigh = max(ys);
-    fprintf('size: %dx%d', xHigh-xLow, yHigh-yLow);
+    xLow = max(min(xs), window3d(1)+1);
+    xHigh = min(max(xs), sizeOfImg(1)-window3d(1));
+    yLow = max(min(ys), window3d(2)+1);
+    yHigh = min(max(ys), sizeOfImg(2)-window3d(2));
 
     for x = xLow:step(1):xHigh
         for y = yLow:step(2):yHigh
@@ -67,15 +55,15 @@ end % end of function
 % debugging for visualise ROI
 % figure;
 % colormap(gray);
-% imagesc(image3d(:,:,108));
-% for i = 1:611
+% imagesc(image3d(:,:,frameInx(5)));
+% for i = 1:1000
 % l = locations(i,:);
-% if l(3) == 108
+% if l(3) == frameInx(5)
 % rectangle('Position',...
-    % [l(2)-window3d(2), l(1)-window3d(1),window3d(2)*2, window3d(1)*2],'FaceColor', 'r');
+%    [l(2)-window3d(2), l(1)-window3d(1),window3d(2)*2, window3d(1)*2],'FaceColor', 'r');
 % end
 % end
 %
 % clear i overlap;
 %end
-
+%

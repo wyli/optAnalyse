@@ -1,9 +1,8 @@
 xmlSet = '~/desktop/description';
 imgSet = '~/desktop/OPTmix';
-needDrawSamples = 1;
-needSplitSet = 0;
+needDrawSamples = 0;
 needTrainBases = 0;
-needExtractFeatures = 0;
+needExtractFeatures = 1;
 needClassifyVectors = 0;
 
 id = '20120812T005342';
@@ -13,10 +12,30 @@ if isempty(id)
 end
 outputSet = sprintf('%s/exp_%s', baseFile, id);
 mkdir(outputSet);
+diary([outputSet '/exp.log']);
+fprintf('%s %s\n', datestr(now), 'starting batch...');
 
-windowSizeL1 = 16;
+% draw samples
+windowSizeL1 = 17;
 windowSizeL2 = 21;
 if needDrawSamples
     drawSamples(imgSet, xmlSet, outputSet, windowSizeL1);
     drawSamples(imgSet, xmlSet, outputSet, windowSizeL2);
+end
+
+% randomly split dataset
+files = dir([xmlSet, '/*.xml']);
+fileInd = randsample(size(files, 1), size(files, 1));
+trainInd = fileInd(1:15);
+validInd = fileInd(16:20);
+testInd = fileInd(21:end);
+
+% train representative bases
+if needTrainBases
+    trainBases(xmlSet, outputSet, trainInd, [windowSizeL1, windowSizeL2]);
+end
+
+% extract features from train, validation, test set
+if needExtractFeatures
+    extractISAFeatures(xmlSet, outputSet, [windowSizeL1, windowSizeL2]);
 end
