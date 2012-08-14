@@ -4,7 +4,7 @@ fprintf('%s classify vectors\n', datestr(now));
 isScale = 1;
 isrbf = 1;
 isSubsample = 1;
-numOfTrain = 5000;
+numOfTrain = 8000;
 % input
 xmlFiles = dir([xmlSet '/*xml']);
 feaSet = [outputSet '/feaSet/%s'];
@@ -39,22 +39,22 @@ if isScale
         spdiags(1./(maxTrain-minTrain)',0,size(trainSet,2), size(trainSet,2));
 end
 if isrbf
-fprintf('searching for C and gamma\n');
-bestcv = 0;
-for log2c = -5:2:15
-    for log2g = 3:-2:-15
-        cmd = ['-v 2 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g)];
-        fprintf('parameters: %s\n', cmd);
-        cv = svmtrain2(trainLabels, trainSet, cmd);
-        if cv >= bestcv
-            bestcv = cv;
-            bestc = 2^log2c; 
-            bestg = 2^log2g;
-            bestCMD = [ '-c ', num2str(bestc), ' -g ', num2str(bestg) ' -b 1'];
-            model = svmtrain2(trainLabels, trainSet, bestCMD);
+    fprintf('searching for C and gamma\n');
+    bestcv = 0;
+    for log2c = -5:2:15
+        for log2g = 3:-2:-15
+            cmd = ['-v 2 -c ', num2str(2^log2c), ' -g ', num2str(2^log2g)];
+            fprintf('parameters: %s\n', cmd);
+            cv = svmtrain2(trainLabels, trainSet, cmd);
+            if cv >= bestcv
+                bestcv = cv;
+                bestc = 2^log2c; 
+                bestg = 2^log2g;
+                bestCMD = [ '-c ', num2str(bestc), ' -g ', num2str(bestg) ' -b 1'];
+                model = svmtrain2(trainLabels, trainSet, bestCMD);
+            end
         end
     end
-end
 else
     model = train(trainLabels, sparse(trainSet), '-s 1');
 end
@@ -75,23 +75,25 @@ for i = 1:size(indexes{2}, 1)
         labels = zeros(size(X_features', 1), 1);
     end
     testLabels = [testLabels; labels];
+
+    if isScale
+        fprintf('%s scaling test set\n', datestr(now));
+        minTrain = min(trainSet, [], 1);
+        maxTrain = max(trainSet, [], 1);
+        testSet = (testSet - repmat(minTrain, size(testSet,1), 1))*...
+            spdiags(1./(maxTrain-minTrain)',0,size(testSet,2), size(testSet,2));
+    end
+    if isrbf
+        [prediction, accuracy, prob] = svmpredict(...
+            testLabels, testSet, model, '-b 1');
+    else
+        [prediction, accuracy, prob] = predict(...
+            testLabels, sparse(testSet), model, '-b 1');
+    end
+    fprintf('%s saving final result\n', datestr(now));
+    resultFile = sprintf('%s/%s%s', outputSet, 'result', name);
+    save(resultFile, 'prediction', 'accuracy', 'prob');
 end
-if isScale
-    fprintf('%s scaling test set\n', datestr(now));
-    minTrain = min(trainSet, [], 1);
-    maxTrain = max(trainSet, [], 1);
-    testSet = (testSet - repmat(minTrain, size(testSet,1), 1))*...
-        spdiags(1./(maxTrain-minTrain)',0,size(testSet,2), size(testSet,2));
-end
-if isrbf
-    [prediction, accuracy, prob] = svmpredict(...
-        testLabels, testSet, model, '-b 1');
-else
-    [prediction, accuracy, prob] = predict(...
-        testLabels, sparse(testSet), model, '-b 1');
-end
-fprintf('%s saving final result\n', datestr(now));
-save([outputSet '/result.mat'], 'prediction', 'accuracy', 'prob');
 %[Dtrain, Dtest] = compute_kernel_matrices(trainSet, testSet);
 %clear trainSet testSet;
 %n_total = length(trainLabels);
