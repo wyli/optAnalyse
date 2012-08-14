@@ -1,13 +1,14 @@
 addpath('~/documents/optAnalyse/libsvm');
 addpath('~/documents/optAnalyse/liblinear');
+addpath('~/documents/optAnalyse/pwmetric');
 xmlSet = '~/desktop/description';
 imgSet = '~/desktop/OPTmix';
-needDrawSamples = 1;
-needTrainBases = 1;
-needExtractFeatures = 1;
+needDrawSamples = 0;
+needTrainBases = 0;
+needExtractFeatures = 0;
 needClassifyVectors = 1;
 
-id = '';
+id = '20120814T004042';
 baseFile = '~/desktop/output';
 if isempty(id)
     id = datestr(now, 30);
