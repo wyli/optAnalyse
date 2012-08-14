@@ -2,9 +2,9 @@ addpath('~/documents/optAnalyse/libsvm');
 addpath('~/documents/optAnalyse/liblinear');
 xmlSet = '~/desktop/description';
 imgSet = '~/desktop/OPTmix';
-needDrawSamples = 0;
-needTrainBases = 0;
-needExtractFeatures = 0;
+needDrawSamples = 1;
+needTrainBases = 1;
+needExtractFeatures = 1;
 needClassifyVectors = 1;
 
 id = '';
@@ -14,7 +14,7 @@ if isempty(id)
 end
 outputSet = sprintf('%s/exp_%s', baseFile, id);
 mkdir(outputSet);
-%diary([outputSet '/exp.log']);
+diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples

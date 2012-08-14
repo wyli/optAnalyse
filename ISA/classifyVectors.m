@@ -2,7 +2,7 @@ function [] = classifyVectors(xmlSet, outputSet, indexes)
 fprintf('%s classify vectors\n', datestr(now));
 % params
 isScale = 1;
-isrbf = 1;
+isrbf = 0;
 % input
 xmlFiles = dir([xmlSet '/*xml']);
 feaSet = [outputSet '/feaSet/%s'];
@@ -50,7 +50,6 @@ end
 else
     model = train(trainLabels, sparse(trainSet), '-s 1');
 end
-clear trainLabels trainSet;
 
 fprintf('%s predicting data\n', datestr(now));
 testSet = [];
@@ -79,4 +78,17 @@ end
 [prediction, accuracy, prob] = svmpredict(testLabels, testSet, model, '-b 1');
 fprintf('%s saving final result\n', datestr(now));
 save([outputSet '/result.mat'], 'prediction', 'accuracy', 'prob');
+[Dtrain, Dtest] = compute_kernel_matrices(trainSet, testSet);
+clear trainSet testSet;
+n_total = length(trainLabels);
+n_pos = sum(trainLabels);
+n_neg = n_total - n_pos;
+cost = 100;
+w_pos = n_total/(2*n_pos);
+w_neg = n_total/(2*n_neg);
+option_string = sprintf('-t 4 -q -s 0 -b 1 -c %f -w1 %f -w0 %f',...
+    cost, w_pos, w_neg);
+model = svmtrain(trainLabels, trainSet, model, option_string);
+[~, accuracy, prob_est] = svmpredict(testLabels, testSet, model, '-b 1');
+save([output '/result1.mat'], 'prediction', 'accuracy', 'prob');
 end

@@ -40,7 +40,7 @@ notconverged = 1;
 
 obj = [];
 
-while notconverged && (iter < 51) %maximum of 10000 iterations
+while notconverged && (iter < 2000) %maximum of 10000 iterations
 
   iter=iter+1;
   
@@ -136,13 +136,13 @@ while notconverged && (iter < 51) %maximum of 10000 iterations
     end
     
     %check convergence
-    %if iter > 200 && obj(iter) / obj(iter - 50) >= 0.9999
-    %    notconverged = 0;
-    %end
+    if iter > 200 && obj(iter) / obj(iter - 50) >= 0.999
+        notconverged = 0;
+    end
 	% another convergence check?
-	if norm(grad,'fro') < 8e-5 * n
-		notconverged = 0;
-	end
+%	if norm(grad,'fro') < 8e-5 * n
+%		notconverged = 0;
+%	end
 
 end %of gradient iterations loop
 
