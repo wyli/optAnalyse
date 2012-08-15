@@ -126,7 +126,7 @@ for i = 1:size(fileInd, 1)
            spdiags(1./(maxTrain-minTrain)',0,size(validSet,2),size(validSet,2));
     end
     [prediction, ~, ~] = svmpredict(validLabels, validSet, cModel);
-    result = result + sum((prediction - validLabels)==0) / size(validLabels, 1);
+    result = result + sum((prediction - validLabels)~=0) / size(validLabels, 1);
 end
 fprintf('validate: %.3f\n', result);
 end

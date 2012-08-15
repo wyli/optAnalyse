@@ -5,7 +5,7 @@ fprintf('%s training bases with %d %d\n',...
 cuboidSet = [outputSet '/cuboid_%d/'];
 xmlFiles = dir([xmlSet '/*.xml']);
 
-samplesPerFile = 800;
+samplesPerFile = 500;
 network_params = set_network_params(windowSize);
 for level = 1:2
     cuboids = [];
@@ -18,7 +18,7 @@ for level = 1:2
             cuboidSet, rec, windowSize(level), samplesPerFile);
         cuboids = [cuboids, c];
     end
-
+    pack;
     fprintf('%s training ISA level %d\n', datestr(now), level);
     if level == 1
         network = build_network(network_params, 0, [outputSet '/']);

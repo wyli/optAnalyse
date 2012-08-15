@@ -60,8 +60,7 @@ end % end of function
 % l = locations(i,:);
 % if l(3) == frameInx(5)
 % rectangle('Position',...
-%    [l(2)-window3d(2), l(1)-window3d(1),window3d(2)*2, window3d(1)*2],...
-%        'FaceColor', 'r');
+%    [l(2)-window3d(2), l(1)-window3d(1),window3d(2)*2, window3d(1)*2],'FaceColor', 'r');
 % end
 % end
 %

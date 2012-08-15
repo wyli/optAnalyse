@@ -9,7 +9,7 @@ feaSet = [outputSet '/feaSet/%s'];
 network_params = set_network_params(windowSize);
 network = build_network(network_params, 2, [outputSet '/']);
 params.postact = set_postact(0);
-samplesPerFile = 1000000; % means no limits
+samplesPerFile = 8000; % means no limits
 
 for i = 1:size(xmlFiles, 1)
     rec = VOCreadxml([xmlSet '/' xmlFiles(i).name]);
