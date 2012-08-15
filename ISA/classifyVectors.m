@@ -4,7 +4,7 @@ fprintf('%s classify vectors\n', datestr(now));
 isScale = 1;
 isrbf = 1;
 isSubsample = 1;
-numOfTrain = 10000;
+numOfTrain = 12000;
 % input
 xmlFiles = dir([xmlSet '/*xml']);
 feaSet = [outputSet '/feaSet/%s'];
@@ -39,7 +39,7 @@ if isrbf
     for log2c = -5:2:15
         for log2g = 3:-2:-15
             cmd = ['-c ', num2str(2^log2c), ' -g ', num2str(2^log2g),...
-                ' -h 0 -m 2048'];
+                ' -h 0 -m 1024'];
             fprintf('parameters: %s\n', cmd);
             cModel = svmtrain2(trainLabels, trainSet, cmd);
             cv = validateModel(...
@@ -54,6 +54,7 @@ if isrbf
             end
         end
     end
+    fprintf('%s BestCMD: %s\n', datestr(now), bestCMD);
 else
     model = train(trainLabels, sparse(trainSet), '-s 1');
 end

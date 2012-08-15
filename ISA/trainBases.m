@@ -5,7 +5,7 @@ fprintf('%s training bases with %d %d\n',...
 cuboidSet = [outputSet '/cuboid_%d/'];
 xmlFiles = dir([xmlSet '/*.xml']);
 
-samplesPerFile = 500;
+samplesPerFile = 1000;
 network_params = set_network_params(windowSize);
 for level = 1:2
     cuboids = [];
