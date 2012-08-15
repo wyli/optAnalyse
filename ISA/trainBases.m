@@ -5,19 +5,18 @@ fprintf('%s training bases with %d %d\n',...
 cuboidSet = [outputSet '/cuboid_%d/'];
 xmlFiles = dir([xmlSet '/*.xml']);
 
-samplesPerFile = 1000;
+samplesPerFile = 800;
 network_params = set_network_params(windowSize);
 for level = 1:2
-    cuboids = zeros(windowSize(level)^3, samplesPerFile);
+    cuboids = [];
     for i = 1:size(trainInd, 1)
         rec = VOCreadxml([xmlSet '/' xmlFiles(trainInd(i)).name]);
         rec = rec.annotation.index;
         fprintf('%s level %d loading %s\n',...
             datestr(now), windowSize(level), rec);
-        s = (i-1)*samplesPerFile + 1;
-        e = i * samplesPerFile;
-        cuboids(:,s:e) = loadCuboids(...
+        c = loadCuboids(...
             cuboidSet, rec, windowSize(level), samplesPerFile);
+        cuboids = [cuboids, c];
     end
 
     fprintf('%s training ISA level %d\n', datestr(now), level);
@@ -36,7 +35,7 @@ end
 function cuboids = loadCuboids(cuboidSet, name, window, samplesPerFile)
 cuboidSet = sprintf(cuboidSet, window);
 cuboidFile = sprintf('%s%s%s\n', cuboidSet, name);
-load(cuboidFile);
+load(cuboidFile); % loading cuboid
 cuboids = zeros(numel(cuboid{1, 1}), size(cuboid, 2));
 for i = 1:size(cuboid, 2)
     cuboids(:,i) = cuboid{1,i}(:);
