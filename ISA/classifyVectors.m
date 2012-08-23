@@ -1,13 +1,14 @@
-function [] = classifyVectors(xmlSet, outputSet, indexes)
+function [] = classifyVectors(xmlSet, feaSet, resultSet, indexes)
 fprintf('%s classify vectors\n', datestr(now));
 % params
 isScale = 1;
-isrbf = 1;
-isSubsample = 1;
+isrbf = 0;
+isSubsample = 0;
 numOfTrain = 12000;
 % input
 xmlFiles = dir([xmlSet '/*xml']);
-feaSet = [outputSet '/feaSet/%s'];
+feaSet = [feaSet '/%s'];
+
 % first set of indexes training
 trainSet = [];
 trainLabels = [];
@@ -36,10 +37,10 @@ end
 if isrbf
     fprintf('searching for C and gamma\n');
     bestcv = 0;
-    for log2c = -5:2:15
-        for log2g = 3:-2:-15
+    for log2c = -2:2:4
+        for log2g = 3:-2:-10
             cmd = ['-c ', num2str(2^log2c), ' -g ', num2str(2^log2g),...
-                ' -h 0 -m 1024'];
+                ' -h 0 -m 512'];
             fprintf('parameters: %s\n', cmd);
             cModel = svmtrain2(trainLabels, trainSet, cmd);
             cv = validateModel(...
@@ -49,21 +50,38 @@ if isrbf
                 bestc = 2^log2c; 
                 bestg = 2^log2g;
                 bestCMD = ['-c ', num2str(bestc), ...
-                    ' -g ', num2str(bestg) ' -b 1'];
+                    ' -g ', num2str(bestg) ' -b 1 -h 0 -m 512'];
                 model = svmtrain2(trainLabels, trainSet, bestCMD);
             end
         end
     end
     fprintf('%s BestCMD: %s\n', datestr(now), bestCMD);
 else
-    model = train(trainLabels, sparse(trainSet), '-s 1');
+    fprintf('searching for C and epsilon\n');
+    bestcv = 0;
+    for log10c = -2:1:1
+        for log10e = -3:1:6
+            cmd = ['-v 10 -s 1 -c ', num2str(10^log10c), ' -e ', num2str(10^log10e)]
+            cv = train(trainLabels, sparse(trainSet), cmd);
+            %cv = validateModel(...
+            %    cModel, xmlSet, feaSet, indexes{2}, [maxTrain;minTrain]);
+            if cv >= bestcv
+                bestcv = cv;
+                bestc = 10^log10c;
+                beste = 10^log10e;
+                bestCMD = ['-s 1 -c ', num2str(bestc), ...
+                    ' -e ', num2str(beste)];
+                model = train(trainLabels, sparse(trainSet), bestCMD);
+            end
+        end
+   end
 end
-
+bestCMD
 fprintf('%s predicting\n', datestr(now));
 testSet = [];
 testLabels = [];
-for i = 1:size(indexes{3}, 1)
-    rec = VOCreadxml([xmlSet '/' xmlFiles(indexes{3}(i)).name]);
+for i = 1:size(indexes{2}, 1)
+    rec = VOCreadxml([xmlSet '/' xmlFiles(indexes{2}(i)).name]);
     [labels, data] = loadDataset(rec, feaSet);
     testSet = [testSet; data];
     testLabels = [testLabels; labels];
@@ -80,10 +98,10 @@ for i = 1:size(indexes{3}, 1)
             testLabels, testSet, model, '-b 1');
     else
         [prediction, accuracy, prob] = predict(...
-            testLabels, sparse(testSet), model, '-b 1');
+            testLabels, sparse(testSet), model);
     end
     fprintf('%s saving final result\n', datestr(now));
-    resultFile = sprintf('%s/%s%s', outputSet, 'result', rec.annotation.index);
+    resultFile = sprintf('%s/%s%s', resultSet, 'result', rec.annotation.index);
     save(resultFile, 'prediction', 'accuracy', 'prob');
 end
 %[Dtrain, Dtest] = compute_kernel_matrices(trainSet, testSet);
@@ -114,7 +132,8 @@ else
 end
 end
 
-function result = validateModel(cModel, xmlSet, feaSet, fileInd, maxMin)
+function result = validateModel(...
+        cModel, xmlSet, feaSet, fileInd, maxMin)
 xmlFiles = dir([xmlSet '/*xml']);
 result = 0;
 for i = 1:size(fileInd, 1)
@@ -126,7 +145,9 @@ for i = 1:size(fileInd, 1)
         validSet = (validSet - repmat(minTrain, size(validSet,1), 1))*...
            spdiags(1./(maxTrain-minTrain)',0,size(validSet,2),size(validSet,2));
     end
-    [prediction, ~, ~] = svmpredict(validLabels, validSet, cModel);
+    % rbf
+    %[prediction, ~, ~] = svmpredict(validLabels, validSet, cModel);
+    [prediction, ~, ~] = predict(validLabels, sparse(validSet), cModel);
     result = result + sum((prediction - validLabels)==0) / size(validLabels, 1);
 end
 fprintf('validate: %.3f\n', result);

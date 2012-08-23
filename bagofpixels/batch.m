@@ -19,32 +19,64 @@ diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples
-windowSize = 31;
+windowSize = 21;
 if needDrawSamples
     drawSamples(imgSet, xmlSet, outputSet, windowSize);
 end
 
-% randomly split dataset
 files = dir([xmlSet, '/*.xml']);
-fileInd = randsample(size(files, 1), size(files, 1));
-trainInd = fileInd(1:15);
-validInd = fileInd(16:20);
-testInd = fileInd(21:end);
-
-subSize = 3;
-step3d = 3;
-k = 200;
-% find k clusters in all training samples
-if needTrainBases
-    trainBases(xmlSet, outputSet, trainInd, windowSize, subSize, step3d, k);
+LGDInd = [];
+INCInd = [];
+for i = 1:length(files)
+    rec = VOCreadxml([xmlSet '/' files(i).name]);
+    if strcmp(rec.annotation.type, 'LGD')
+        LGDInd(end+1) = i;
+    else
+        INCInd(end+1) = i;
+    end
 end
+% randomly permutate
+LGDInd = LGDInd(randperm(size(LGDInd, 2)));
+INCInd = INCInd(randperm(size(INCInd, 2)));
+allInd = zeros(1, size(files, 1));
+allInd(1, 1:2:end) = LGDInd;
+allInd(1, 2:2:end) = INCInd;
+% ten fold cross validation
+k = 10;
+foldSize = 3;
+allInd = reshape(allInd, foldSize, []);
+testScheme = eye(k, 'int8');
 
-% extract features from train, validation, test set
-if needExtractFeatures
-    extractBOPFeatures(xmlSet, outputSet, windowSize, subSize, step3d);
-end
+for f = 1:length(testScheme)
+    
+    trainInd = allInd(:, ~testScheme(f, :));
+    trainInd = trainInd(:);
+    testInd = allInd(:, f);
 
-% classify vectors
-if needClassifyVectors
-    classifyVectors(xmlSet, outputSet, {trainInd; validInd; testInd});
+    subSize = 5;
+    step3d = 5;
+    k = 200;
+
+    resultSet = sprintf('%s/result_%d', outputSet, f);
+    mkdir(resultSet);
+    % find k clusters in all training samples
+    baseSet = sprintf('%s/result_%d/base', outputSet, f);
+    if needTrainBases
+        trainBases(xmlSet, outputSet, baseSet,...
+            trainInd, windowSize, subSize, step3d, k);
+    end
+
+    % extract features from train, validation, test set
+    feaSet = sprintf('%s/result_%d/feaSet', outputSet, f);
+    if needExtractFeatures
+        extractBOPFeatures(xmlSet, outputSet, baseSet, feaSet,...
+            windowSize, subSize, step3d);
+    end
+
+    % classify vectors
+    if needClassifyVectors
+        classifyVectors(xmlSet, feaSet, resultSet,...
+            {trainInd; testInd});
+    end
 end
+diary off;

@@ -141,7 +141,7 @@ while notconverged && (iter < 2000) %maximum of 10000 iterations
     end
 	% another convergence check?
 %	if norm(grad,'fro') < 8e-5 * n
-%		notconverged = 0;
+%  	    notconverged = 0;
 %	end
 
 end %of gradient iterations loop
