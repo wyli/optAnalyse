@@ -1,4 +1,4 @@
-addpath('~/documents/optAnalyse/libsvm');
+addpath('U:/github/optAnalyse/libsvm');
 addpath('~/documents/optAnalyse/liblinear');
 addpath('~/documents/optAnalyse/pwmetric');
 xmlSet = '~/desktop/description';
