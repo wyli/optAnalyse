@@ -1,15 +1,15 @@
 addpath('U:/github/optAnalyse/libsvm');
-addpath('~/documents/optAnalyse/liblinear');
-addpath('~/documents/optAnalyse/pwmetric');
-xmlSet = '~/desktop/description';
-imgSet = '~/desktop/OPTmix';
+addpath('U:/github/optAnalyse/liblinear');
+addpath('U:/github/optAnalyse/pwmetric');
+xmlSet = 'U:/OPTannotation/description';
+imgSet = 'U:/OPTannotation/OPTmix';
 needDrawSamples = 1;
 needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;
 
 id = '';
-baseFile = '~/desktop/output';
+baseFile = 'U:/optresults';
 if isempty(id)
     id = datestr(now, 30);
 end
@@ -19,7 +19,7 @@ diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples
-windowSizeL1 = 13;
+windowSizeL1 = 11;
 windowSizeL2 = 21;
 if needDrawSamples
     drawSamples(imgSet, xmlSet, outputSet, windowSizeL1);
