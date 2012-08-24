@@ -53,6 +53,8 @@ testScheme = eye(k, 'int8');
 
 
 for f = 1:length(testScheme)
+    diary off;
+    diary on;
 
     trainInd = allInd(:, ~testScheme(f, :));
     trainInd = trainInd(:);
@@ -81,4 +83,3 @@ for f = 1:length(testScheme)
             {trainInd; testInd});
     end
 end
-diary off;
