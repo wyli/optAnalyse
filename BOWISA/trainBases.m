@@ -5,7 +5,7 @@ fprintf('%s training bases with %d %d\n',...
 cuboidSet = [outputSet '/cuboid_%d/'];
 xmlFiles = dir([xmlSet '/*.xml']);
 
-samplesPerFile = 200;
+samplesPerFile = 50;
 fprintf('sample per patient for taining: %d\n', samplesPerFile);
 network_params = set_network_params(windowSize);
 for level = 1:2
@@ -42,7 +42,7 @@ for level = 1:2
         localPatches = localPatches';
         size(localPatches)
         clusterPath = sprintf('%s/clusters.mat', baseSet);
-        opts = statset('MaxIter', 200);
+        opts = statset('MaxIter', 500);
         fprintf('kmeans clustering ... %d\n', size(localPatches));
         [~, clusters] = kmeans(localPatches, k,...
             'EmptyAction', 'singleton',...
