@@ -1,11 +1,11 @@
-function [] = trainBases(xmlSet, outputSet, baseSet, trainInd, windowSize)
+function [] = trainBases(xmlSet, outputSet, baseSet, trainInd, windowSize, k)
 
 fprintf('%s training bases with %d %d\n',...
     datestr(now), windowSize(1), windowSize(2));
 cuboidSet = [outputSet '/cuboid_%d/'];
 xmlFiles = dir([xmlSet '/*.xml']);
 
-samplesPerFile = 800;
+samplesPerFile = 200;
 fprintf('sample per patient for taining: %d\n', samplesPerFile);
 network_params = set_network_params(windowSize);
 for level = 1:2
@@ -32,8 +32,19 @@ for level = 1:2
         clear cuboids;
     else
         network = build_network(network_params, 1, [baseSet '/']);
-        train_isa(network, cuboids, [baseSet '/'],...
-            set_training_params(2, network_params));
+        %train_isa(network, cuboids, [baseSet '/'],...
+        %    set_training_params(2, network_params));
+        params = set_training_params(2, network_params);
+        localPatches = transactConvISA(single(cuboids), network.isa{1},...
+            network.isa{2}, params.postact.layer1);
+        width = min(300, windowSize(1)^3);
+        localPatches = reshape(localPatches, width, []);
+        localPatches = localPatches';
+        size(localPatches)
+        clusterPath = sprintf('%s/clusters.mat', baseSet);
+        fprintf('kmeans clustering ... %d\n', size(localPatches));
+        [~, clusters] = kmeans(localPatches, k, 'EmptyAction', 'singleton');
+        save(clusterPath, 'clusters');
     end
 end
 end

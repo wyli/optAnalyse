@@ -3,12 +3,12 @@ addpath('~/documents/optAnalyse/liblinear');
 addpath('~/documents/optAnalyse/pwmetric');
 xmlSet = '~/desktop/description';
 imgSet = '~/desktop/OPTmix';
-needDrawSamples = 1;
+needDrawSamples = 0;
 needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;
 
-id = '';
+id = '20120831T182522';
 baseFile = '~/desktop/output';
 if isempty(id)
     id = datestr(now, 30);
@@ -19,11 +19,14 @@ diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples
-windowSize = 21;
+windowSizeL1 = 3;
+windowSizeL2 = 21;
 if needDrawSamples
-    drawSamples(imgSet, xmlSet, outputSet, windowSize);
+    drawSamples(imgSet, xmlSet, outputSet, windowSizeL1);
+    drawSamples(imgSet, xmlSet, outputSet, windowSizeL2);
 end
 
+% randomly split dataset
 files = dir([xmlSet, '/*.xml']);
 LGDInd = [];
 INCInd = [];
@@ -41,37 +44,35 @@ INCInd = INCInd(randperm(size(INCInd, 2)));
 allInd = zeros(1, size(files, 1));
 allInd(1, 1:2:end) = LGDInd;
 allInd(1, 2:2:end) = INCInd;
+
 % ten fold cross validation
 k = 10;
 foldSize = 3;
 allInd = reshape(allInd, foldSize, []);
 testScheme = eye(k, 'int8');
 
+
 for f = 1:length(testScheme)
-    
+
     trainInd = allInd(:, ~testScheme(f, :));
     trainInd = trainInd(:);
     testInd = allInd(:, f);
 
-    subSize = 5;
-    step3d = 5;
-    k = 200;
-
+    % train representative bases
     resultSet = sprintf('%s/result_%d', outputSet, f);
     mkdir(resultSet);
-    % find k clusters in all training samples
     baseSet = sprintf('%s/result_%d/base', outputSet, f);
     mkdir(baseSet);
     if needTrainBases
         trainBases(xmlSet, outputSet, baseSet,...
-            trainInd, windowSize, subSize, step3d, k);
+            trainInd, [windowSizeL1, windowSizeL2], 200);
     end
 
     % extract features from train, validation, test set
     feaSet = sprintf('%s/result_%d/feaSet', outputSet, f);
     if needExtractFeatures
-        extractBOPFeatures(xmlSet, outputSet, baseSet, feaSet,...
-            windowSize, subSize, step3d);
+        extractBOWISAFeatures(xmlSet, outputSet, baseSet, feaSet, ...
+            [windowSizeL1, windowSizeL2]);
     end
 
     % classify vectors

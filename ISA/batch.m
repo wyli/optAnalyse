@@ -19,7 +19,7 @@ diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples
-windowSizeL1 = 13;
+windowSizeL1 = 5;
 windowSizeL2 = 21;
 if needDrawSamples
     drawSamples(imgSet, xmlSet, outputSet, windowSizeL1);
