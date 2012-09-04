@@ -8,7 +8,7 @@ needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;
 
-id = '20120831T182522';
+id = '20120904T023335';
 baseFile = '~/desktop/output';
 if isempty(id)
     id = datestr(now, 30);
@@ -19,7 +19,7 @@ diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples
-windowSizeL1 = 3;
+windowSizeL1 = 9;
 windowSizeL2 = 21;
 if needDrawSamples
     drawSamples(imgSet, xmlSet, outputSet, windowSizeL1);

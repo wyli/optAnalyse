@@ -124,11 +124,11 @@ name = rec.annotation.index;
 type = rec.annotation.type;
 feaFile = sprintf(feaSet, name);
 load(feaFile);
-data = X_features';
+data = X_features;
 if strcmp(type, 'Cancers')
-    labels = ones(size(X_features', 1) ,1);
+    labels = ones(size(X_features, 1) ,1);
 else
-    labels = -1 * ones(size(X_features', 1), 1);
+    labels = -1 * ones(size(X_features, 1), 1);
 end
 end
 
