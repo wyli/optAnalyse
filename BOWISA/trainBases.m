@@ -37,14 +37,14 @@ for level = 1:2
         params = set_training_params(2, network_params);
         localPatches = transactConvISA(single(cuboids), network.isa{1},...
             network.isa{2}, params.postact.layer1);
-        width = min(300, windowSize(1)^3);
+        width = min(150, windowSize(1)^3);
         localPatches = reshape(localPatches, width, []);
         localPatches = localPatches';
         size(localPatches)
         s = randsample(size(localPatches, 1),...
             min(size(localPatches, 1), 40000));
         localPatches = localPatches(s, :);
-        fprintf('randomly sample 30000 for kmeans');
+        fprintf('randomly sample 40000 for kmeans\n');
         clusterPath = sprintf('%s/clusters.mat', baseSet);
         opts = statset('MaxIter', 500);
         fprintf('kmeans clustering ... %d\n', size(localPatches));
