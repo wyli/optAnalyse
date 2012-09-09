@@ -42,7 +42,7 @@ for level = 1:2
         localPatches = localPatches';
         size(localPatches)
         s = randsample(size(localPatches, 1),...
-            min(size(localPatches, 1), 40000));
+            min(size(localPatches, 1), 60000));
         localPatches = localPatches(s, :);
         fprintf('randomly sample 40000 for kmeans\n');
         clusterPath = sprintf('%s/clusters.mat', baseSet);
@@ -54,11 +54,9 @@ for level = 1:2
 %            'Options', opts);
 %            ---------------------------------kmeans2---------------
         fprintf('kmeans clustering ... %d\n', size(localPatches));
-        prm.nTrial = 3;
+        prm.nTrial = 5;
         prm.maxIter = 500;
-        prm.display = 1;
-        [~, clusters] = kmeans2(localPatches', k, prm);
-        clusters = clusters';
+        [~, clusters] = kmeans2(localPatches, k, prm);
 %            --------------------------------kmeans2---------------
         save(clusterPath, 'clusters');
     end

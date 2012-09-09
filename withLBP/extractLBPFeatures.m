@@ -14,7 +14,7 @@ load(clusterSet);
 for i = 1:size(xmlFiles, 1)
     rec = VOCreadxml([xmlSet '/' xmlFiles(i).name]);
     name = rec.annotation.index;
-    fprintf('%s extracting BoG features %s\n', datestr(now), name);
+    fprintf('%s extracting LBP features %s\n', datestr(now), name);
     cuboidFile = sprintf(cuboidSet, windowSize, name);
     load(cuboidFile);
     cuboid = cuboid(1,:);
@@ -48,14 +48,38 @@ zs = halfSize:wStep:(imgSize(3) - halfSize);
 x = x(:);
 y = y(:);
 z = z(:);
-localCuboid = zeros(numel(x), wSize^3);
-for i = 1:size(localCuboid, 1)
+localFeature = cell(numel(x), 1); % 3 x 59 patterns
+for i = 1:size(localFeature, 1)
     sampleCell = getSurroundCuboid(...
         image3d, [x(i), y(i), z(i)], [wSize, wSize, wSize]);
-    localCuboid(i, :) = sampleCell(:)';
+    localFeature{i} = sampleCell;
 end
-D = dist2(localCuboid, clusters);
+localFeature = cellfun(@calcLBP, localFeature, 'UniformOutput', false);
+localFeature = cell2mat(localFeature);
+assert(size(localFeature, 2) == 177,...
+    'not right dimension %d', size(localFeature, 2));
+D = dist2(localFeature, clusters);
 [~, nearest] = min(D, [], 2);
 bins = 1:size(clusters, 1);
 histogram = histc(nearest', bins);
+end
+
+function histLBP = calcLBP(image3d)
+global uniformCode
+image3d = double(image3d);
+FxRadius = 1;
+FyRadius = 1;
+TInterval = 1;
+
+TimeLength = 1;
+BorderLength = 1;
+
+bBilinearInterpolation = 1;
+
+Bincount = 59;
+NeighborPoints = [8 8 8];
+histLBP = LBPTOP(image3d, FxRadius, FyRadius, TInterval, NeighborPoints,...
+    TimeLength, BorderLength, bBilinearInterpolation, Bincount, uniformCode);
+histLBP = histLBP(:)';
+assert(size(histLBP, 2) == 177, 'LBP histogram length %d?', 177);
 end

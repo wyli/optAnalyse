@@ -78,8 +78,8 @@ fprintf('%s', bestCMD);
 fprintf('%s predicting\n', datestr(now));
 testSet = [];
 testLabels = [];
-for i = 1:size(indexes{3}, 1)
-    rec = VOCreadxml([xmlSet '/' xmlFiles(indexes{3}(i)).name]);
+for i = 1:size(indexes{2}, 1)
+    rec = VOCreadxml([xmlSet '/' xmlFiles(indexes{2}(i)).name]);
     [labels, data] = loadDataset(rec, feaSet);
     testSet = [testSet; data];
     testLabels = [testLabels; labels];

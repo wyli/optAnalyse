@@ -8,10 +8,10 @@ needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;
 
-id = '';
+id='5';
 baseFile = '~/desktop/output';
 if isempty(id)
-    id = datestr(now, 30);
+    id = datestr(now,30);
 end
 outputSet = sprintf('%s/exp_%s', baseFile, id);
 mkdir(outputSet);
@@ -53,7 +53,7 @@ for f = 1:length(testScheme)
     trainInd = trainInd(:);
     testInd = allInd(:, f);
 
-    subSize = 5;
+    subSize=5;
     step3d = 5;
     k = 200;
 
@@ -67,7 +67,7 @@ for f = 1:length(testScheme)
             trainInd, windowSize, subSize, step3d, k);
     end
 
-    % extract features from train, validation, test set
+    % extract features from train, validation
     feaSet = sprintf('%s/result_%d/feaSet', outputSet, f);
     if needExtractFeatures
         extractBOPFeatures(xmlSet, outputSet, baseSet, feaSet,...

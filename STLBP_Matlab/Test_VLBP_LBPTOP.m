@@ -9,9 +9,11 @@
 % If you have any comments, please feel free to contact guoying or Xiaohua Huang.
 % huang.xiaohua@ee.oulu.fi
 %% read images
+global yes
+yes = 1;
 clc
 clear all
-cd ('..\STLBP_Matlab\test\'); % please replace "..." by your images path
+cd ('../STLBP_Matlab/test/'); % please replace "..." by your images path
 a = dir('*.jpg'); % directory of images, ".jpg" can be changed, for example, ".bmp" if you use
 for i = 1 : length(a)
     ImgName = getfield(a, {i}, 'name');
@@ -64,12 +66,12 @@ fHistogram = RIVLBP(VolData, TInterval, FRadius, NeighborPoints, BorderLength, T
 % pixel and computed to get the LBP-TOP feature.
 FxRadius = 1; 
 FyRadius = 1;
-TInterval = 2;
+TInterval = 1;
 
 % 2. "TimeLength" and "BoderLength" are the parameters for bodering parts in time and space which would not
 % be computed for features. Usually they are same to TInterval and the
 % bigger one of "FxRadius" and "FyRadius";
-TimeLength = 2;
+TimeLength = 1;
 BorderLength = 1;
 
 % 3. "bBilinearInterpolation" : if use bilinear interpolation for computing a
@@ -91,4 +93,4 @@ else
     clear U8File;
 end
 % call LBPTOP
-Histogram = LBPTOP(VolData, FxRadius, FyRadius, TInterval, NeighborPoints, TimeLength, BorderLength, bBilinearInterpolation, Bincount, Code);
+Histogram = LBPTOP(VolData(1:10, 1:10, 1:10), FxRadius, FyRadius, TInterval, NeighborPoints, TimeLength, BorderLength, bBilinearInterpolation, Bincount, Code);
