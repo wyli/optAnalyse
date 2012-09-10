@@ -27,6 +27,7 @@ for i = 1 : length(a)
     end
     VolData(:, :, i) = Imgdat;
 end
+VolData = uint8(VolData);
 cd ..
 
 %% VLBP
@@ -34,29 +35,29 @@ cd ..
 %                1: new Rotation invariant descriptor published in PAMI 2007;
 %                2: old Rotation invariant descriptor published in ECCV
 %                workshop 2006
-RotateIndex = 1;
-
-% parameter set
-% 1. the radii parameter in space and Time axis; They could be 1, 2 or 3 or 4
-FRadius = 1; 
-TInterval = 2;
-
-% 2. the number of the neighboring points; It can be 2 and 4.
-NeighborPoints = 4;
-
-% 3. "TimeLength" and "BorderLength" are the parameters for bordering parts in time and
-% space which would not be computed for features. Usually they are same to TInterval and
-% the bigger one of "FRadius";
-TimeLength = 2;
-BorderLength = 1;
-
-% 4. "bBilinearInterpolation" : if use bilinear interpolation for computing a
-% neighbor point in a circle: 1 (yes), 0 (not)
-bBilinearInterpolation = 1;
-
-% call VLBP
-fHistogram = RIVLBP(VolData, TInterval, FRadius, NeighborPoints, BorderLength, TimeLength, RotateIndex, bBilinearInterpolation);
-%% LBP-TOP
+% RotateIndex = 1;
+% 
+% % parameter set
+% % 1. the radii parameter in space and Time axis; They could be 1, 2 or 3 or 4
+% FRadius = 1; 
+% TInterval = 2;
+% 
+% % 2. the number of the neighboring points; It can be 2 and 4.
+% NeighborPoints = 4;
+% 
+% % 3. "TimeLength" and "BorderLength" are the parameters for bordering parts in time and
+% % space which would not be computed for features. Usually they are same to TInterval and
+% % the bigger one of "FRadius";
+% TimeLength = 2;
+% BorderLength = 1;
+% 
+% % 4. "bBilinearInterpolation" : if use bilinear interpolation for computing a
+% % neighbor point in a circle: 1 (yes), 0 (not)
+% bBilinearInterpolation = 1;
+% 
+% % call VLBP
+% fHistogram = RIVLBP(VolData, TInterval, FRadius, NeighborPoints, BorderLength, TimeLength, RotateIndex, bBilinearInterpolation);
+% %% LBP-TOP
 % parameter set
 
 % 1. "FxRadius", "FyRadius" and "TInterval" are the radii parameter along X, Y and T axis; They can be 1, 2, 3 and 4. "1" and "3" are recommended.
@@ -93,4 +94,9 @@ else
     clear U8File;
 end
 % call LBPTOP
-Histogram = LBPTOP(VolData(1:10, 1:10, 1:10), FxRadius, FyRadius, TInterval, NeighborPoints, TimeLength, BorderLength, bBilinearInterpolation, Bincount, Code);
+tic;
+Histogram = LBPTOP(VolData, Code);
+toc;
+tic;
+His = LBPHist(VolData);
+toc;

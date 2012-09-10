@@ -1,10 +1,5 @@
 % set uniform patterns for LBP
 addpath('~/documents/optAnalyse/STLBP_Matlab');
-global uniformCode;
-U8File = importdata('STLBP_Matlab/UniformLBP8.txt');
-uniformCode = U8File(2:end, :);
-clear U8File;
-assert(size(uniformCode, 1) == 256, 'uniform patterns incomplete');
 % end of set
 
 addpath('~/documents/optAnalyse/libsvm');

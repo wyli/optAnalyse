@@ -46,6 +46,7 @@ end
 
 function localFeature = sampleSubCuboids(image3d, wSize, wStep)
     global numOfSubsamples;
+    image3d = uint8(image3d);
     imgSize = size(image3d);
     halfSize = ceil(wSize/2);
 
@@ -64,28 +65,8 @@ function localFeature = sampleSubCuboids(image3d, wSize, wStep)
             image3d, [xs(i), ys(i), zs(i)], [wSize, wSize, wSize]);
         localFeature{i} = sampleCell; 
     end
-    localFeature = cellfun(@calcLBP, localFeature, 'UniformOutput', false);
+    localFeature = cellfun(@LBPHist, localFeature, 'UniformOutput', false);
     localFeature = cell2mat(localFeature);
     assert(size(localFeature, 2) == 177, 'not right dimension');
     assert(size(localFeature, 1) == numOfSubsamples, 'not enough subsamples');
-end
-
-function histLBP = calcLBP(image3d)
-    global uniformCode
-    image3d = double(image3d);
-    FxRadius = 1;
-    FyRadius = 1;
-    TInterval = 1;
-
-    TimeLength = 1;
-    BorderLength = 1;
-
-    bBilinearInterpolation = 1;
-
-    Bincount = 59;
-    NeighborPoints = [8 8 8];
-    histLBP = LBPTOP(image3d, FxRadius, FyRadius, TInterval, NeighborPoints,...
-        TimeLength, BorderLength, bBilinearInterpolation, Bincount, uniformCode);
-    histLBP = histLBP(:)';
-    assert(size(histLBP, 2) == 177, 'LBP histogram length %d?', 177);
 end
