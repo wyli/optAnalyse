@@ -19,7 +19,7 @@ diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples
-windowSizeL1 = 11;
+windowSizeL1 = 7;
 windowSizeL2 = 21;
 if needDrawSamples
     drawSamples(imgSet, xmlSet, outputSet, windowSizeL1);
@@ -83,3 +83,4 @@ for f = 1:length(testScheme)
             {trainInd; testInd});
     end
 end
+diary off

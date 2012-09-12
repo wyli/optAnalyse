@@ -41,6 +41,7 @@ notconverged = 1;
 obj = [];
 
 while notconverged && (iter < 2000) %maximum of 10000 iterations
+  pause(10);
 
   iter=iter+1;
   
@@ -139,7 +140,6 @@ while notconverged && (iter < 2000) %maximum of 10000 iterations
     if iter > 200 && obj(iter) / obj(iter - 50) >= 0.999
         notconverged = 0;
     end
-    pause(0.5);
 	% another convergence check?
 %	if norm(grad,'fro') < 8e-5 * n
 %  	    notconverged = 0;

@@ -1,15 +1,15 @@
-addpath('~/documents/optAnalyse/libsvm');
-addpath('~/documents/optAnalyse/liblinear');
-addpath('~/documents/optAnalyse/pwmetric');
-xmlSet = '~/desktop/description';
-imgSet = '~/desktop/OPTmix';
-needDrawSamples = 1;
+addpath('U:/github/optAnalyse/libsvm');
+addpath('U:/github/optAnalyse/liblinear');
+addpath('U:/github/optAnalyse/pwmetric');
+xmlSet = 'U:/OPTannotation/description';
+imgSet = 'U:/OPTannotation/OPTmix';
+needDrawSamples = 0;
 needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;
 
-id = '';
-baseFile = '~/desktop/output';
+id = '20120906T045201';
+baseFile = 'U:/optresults';
 if isempty(id)
     id = datestr(now, 30);
 end
@@ -53,24 +53,28 @@ for f = 1:length(testScheme)
     trainInd = trainInd(:);
     testInd = allInd(:, f);
 
-    subSize = 5;
-    step3d = 5;
+    subSize = 19;
+    step3d = 1;
     k = 200;
+
+    randMat = randn(150, subSize^3);
 
     resultSet = sprintf('%s/result_%d', outputSet, f);
     mkdir(resultSet);
     % find k clusters in all training samples
     baseSet = sprintf('%s/result_%d/base', outputSet, f);
+    mkdir(baseSet);
     if needTrainBases
         trainBases(xmlSet, outputSet, baseSet,...
-            trainInd, windowSize, subSize, step3d, k);
+            trainInd, windowSize, subSize, step3d, k,...
+            randMat);
     end
 
     % extract features from train, validation, test set
     feaSet = sprintf('%s/result_%d/feaSet', outputSet, f);
     if needExtractFeatures
         extractBOPFeatures(xmlSet, outputSet, baseSet, feaSet,...
-            windowSize, subSize, step3d);
+            windowSize, subSize, step3d, randMat);
     end
 
     % classify vectors

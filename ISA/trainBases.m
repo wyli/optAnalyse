@@ -5,7 +5,7 @@ fprintf('%s training bases with %d %d\n',...
 cuboidSet = [outputSet '/cuboid_%d/'];
 xmlFiles = dir([xmlSet '/*.xml']);
 
-samplesPerFile = 2000;
+samplesPerFile = 1000;
 fprintf('sample per patient for taining: %d\n', samplesPerFile);
 network_params = set_network_params(windowSize);
 for level = 1:2
