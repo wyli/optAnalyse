@@ -33,7 +33,12 @@ function histogram = cuboid2Hist(image3d, clusters, wSize, wStep)
 imgSize = size(image3d);
 halfSize = ceil(wSize/2);
 imgSize = imgSize - halfSize;
+wStep = 3;
 xs = halfSize:wStep:(imgSize(1) - halfSize);
+if size(xs, 2) < 2
+    wStep = wStep - 1;
+    xs = halfSize:wStep:(imgSize(1) - halfSize);
+end
 [x y z] = meshgrid(xs, xs, xs);
 x = x(:);
 y = y(:);

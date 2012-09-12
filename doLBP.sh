@@ -1,5 +1,5 @@
 cd /Users/wenqili/Documents/optAnalyse/withLBP
-declare -a name=('5' '7' '9' '11' '13' '15' '17' '19');
+declare -a name=('13' '15' '17' '19');
 for i in ${name[@]}
 do
     echo $i

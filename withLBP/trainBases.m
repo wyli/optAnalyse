@@ -3,8 +3,8 @@ function [] = trainBases(...
     fprintf('%s find %d clusters on small window %d\n', datestr(now), k, subSize);
     % params
     global numOfSubsamples;
-    numOfSubsamples = 4;
-    samplesPerFile = 400;
+    numOfSubsamples = 2;
+    samplesPerFile = 800;
     subsamplesPerFile = numOfSubsamples * samplesPerFile;
     % input
     xmlFiles = dir([xmlSet '/*.xml']);

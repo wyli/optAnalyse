@@ -60,7 +60,7 @@ else % linear svm
     bestcv = 0;
     for log10c = -2:1:0
         for log10e = -2:1:6
-            cmd = ['-v 5 -s 1 -c ', num2str(10^log10c),...
+            cmd = ['-v 10 -s 1 -c ', num2str(10^log10c),...
                 ' -e ', num2str(10^log10e)]
             cv = train(trainLabels, sparse(trainSet), cmd);
 
