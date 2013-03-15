@@ -23,6 +23,7 @@ for i = 1:size(xmlFiles, 1)
         network.isa{1}, network.isa{2}, size(cuboids, 2), params.postact);
     X_features = [act_l2; act_l1_pca_reduced];
     featureFile = sprintf(feaSet, rec);
+    X_features = X_feautres';
     save(featureFile, 'X_features');
 end
 end

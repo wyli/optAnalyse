@@ -4,7 +4,7 @@ function [] = trainBases(...
     % params
     global numOfSubsamples;
     numOfSubsamples = 4;
-    samplesPerFile = 470;
+    samplesPerFile = 50;
     subsamplesPerFile = numOfSubsamples * samplesPerFile;
     % input
     xmlFiles = dir([xmlSet '/*.xml']);
@@ -19,8 +19,8 @@ function [] = trainBases(...
         name = rec.annotation.index;
         cuboidFile = sprintf(cuboidSet, windowSize, name);
         load(cuboidFile);
-        assert(size(cuboid, 2) > samplesPerFile, 'not enough samples per file');
-        r = randsample(size(cuboid,2), min(size(cuboid,2), samplesPerFile));
+        %assert(size(cuboid, 2) > samplesPerFile, 'not enough samples per file');
+        r = randsample(size(cuboid,2),min(size(cuboid,2), samplesPerFile));
         cuboid = cuboid(1,r);
 
         idMat = ones(1, size(cuboid, 2));

@@ -6,7 +6,7 @@ RandStream.setDefaultStream(RandStream('mrg32k3a', 'seed', sum(100*clock)));
 xmlSet = '~/desktop/description';
 imgSet = '~/desktop/OPTmix';
 generate_scheme = 1;
-needDrawSamples = 1;
+needDrawSamples = 0;
 needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;

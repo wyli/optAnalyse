@@ -15,7 +15,7 @@ needClassifyVectors = 1;
 windowSize = 21;
 subSize = 9;
 step3d = 2;
-n = 729
+n=729;
 
 id = '9'; % for debugging
 baseFile = '~/Desktop/output';
@@ -107,3 +107,4 @@ for f = 1:length(testScheme)
     end
 end
 diary off;
+exit;

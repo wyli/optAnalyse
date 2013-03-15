@@ -10,7 +10,7 @@ RandStream.setDefaultStream(RandStream('mrg32k3a', 'seed', sum(100*clock)));
 xmlSet = '~/desktop/description';
 imgSet = '~/desktop/OPTmix';
 generate_scheme = 1;
-needDrawSamples = 1;
+needDrawSamples = 0;
 needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;
@@ -80,13 +80,8 @@ for f = 1:length(testScheme)
     baseSet = sprintf('%s/result_%d/base', outputSet, f);
     mkdir(baseSet);
     if needTrainBases
-        try
         trainBases(xmlSet, outputSet, baseSet,...
             trainInd, windowSize, subSize, step3d, k);
-        catch ex1
-            save('ex1', 'ex1');
-            %exit;
-        end
     end
 
     % extract features from train, valid='13';
