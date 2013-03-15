@@ -28,7 +28,7 @@ for i = 1:size(xmlFiles, 1)
     localFeatures = transactConvISA(single(cuboids), network.isa{1},...
         network.isa{2}, params.postact.layer1);
     % pca is fixed to 300 if not small than 300
-    width = min(150, windowSize(1)^3);
+    width = min(300, windowSize(1)^3);
     %  k is fixed as 200
     k = size(clusters, 1);
     X_features = zeros(size(localFeatures, 2), k);

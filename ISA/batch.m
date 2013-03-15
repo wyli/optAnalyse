@@ -1,25 +1,28 @@
 addpath('~/documents/optAnalyse/libsvm');
 addpath('~/documents/optAnalyse/liblinear');
 addpath('~/documents/optAnalyse/pwmetric');
+RandStream.setDefaultStream(RandStream('mrg32k3a', 'seed', sum(100*clock)));
+
 xmlSet = '~/desktop/description';
 imgSet = '~/desktop/OPTmix';
-needDrawSamples = 0;
+generate_scheme = 1;
+needDrawSamples = 1;
 needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;
 
-id = '07';
+id = '9';
 baseFile = '~/desktop/output';
 if isempty(id)
     id = datestr(now, 30);
 end
-outputSet = sprintf('%s/isa_%s', baseFile, id);
+outputSet = sprintf('%s/COVISA_%s', baseFile, id);
 mkdir(outputSet);
 diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
 
 % draw samples
-windowSizeL1 = 7;
+windowSizeL1 = 9;
 windowSizeL2 = 21;
 if needDrawSamples
     drawSamples(imgSet, xmlSet, outputSet, windowSizeL1);
@@ -38,25 +41,32 @@ for i = 1:length(files)
         INCInd(end+1) = i;
     end
 end
+INCInd(end+1) = 60;
 % randomly permutate
 LGDInd = LGDInd(randperm(size(LGDInd, 2)));
 INCInd = INCInd(randperm(size(INCInd, 2)));
-allInd = zeros(1, size(files, 1));
+allInd = zeros(1, 60);
 allInd(1, 1:2:end) = LGDInd;
 allInd(1, 2:2:end) = INCInd;
 
 % ten fold cross validation
-k = 10;
-foldSize = 3;
-allInd = reshape(allInd, foldSize, []);
-testScheme = eye(k, 'int8');
+if generate_scheme
+    k = 10;
+    foldSize = 6;
+    allInd = reshape(allInd, foldSize, []);
+    testScheme = eye(k, 'int8');
+else
+    load([outputSet '/exparam']);
+end
 
 
 for f = 1:length(testScheme)
 
     trainInd = allInd(:, ~testScheme(f, :));
     trainInd = trainInd(:);
+    trainInd = trainInd(trainInd ~= 60);
     testInd = allInd(:, f);
+    testInd = testInd(testInd ~= 60);
 
     % train representative bases
     resultSet = sprintf('%s/result_%d', outputSet, f);

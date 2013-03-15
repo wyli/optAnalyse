@@ -21,7 +21,7 @@ params.stride = stride;
 %% network feature dimension and group size
 % these are the default settings
 
-params.pca_dim_l1 = 150; % number of feature dimensions network layer 1
+params.pca_dim_l1 = 300; % number of feature dimensions network layer 1
 params.group_size_l1 = 1; % group size
 
 params.pca_dim_l2 = 200; 

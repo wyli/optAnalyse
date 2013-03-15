@@ -33,8 +33,9 @@ for i = 1:size(trainInd, 1)
 end
 opts = statset('MaxIter', 200);
 localSet = (randMat*localSet')';
-assert(size(localSet, 1) > 40000, '%d %d', size(localSet, 1), size(localSet, 2));
-r = randsample(size(localSet, 1), 40000);
+fprintf('kmeans on %dx%d features', size(localSet, 1), size(localSet, 2));
+%assert(size(localSet, 1) > 40000, '%d %d', size(localSet, 1), size(localSet, 2));
+r = randsample(size(localSet, 1), size(localSet, 1));
 localSet = localSet(r, :);
 %[~, clusters] = kmeans(localSet, k,...
 %    'Start', 'cluster',...

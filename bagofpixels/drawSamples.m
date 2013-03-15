@@ -18,7 +18,11 @@ for i = 1:size(xmlFiles, 1)
     rec = VOCreadxml([xmlSet '/' xmlFiles(i).name]);
     name = rec.annotation.index;
     for p = 1:size(rec.annotation.part, 2)
-        part = rec.annotation.part{p};
+        try
+            part = rec.annotation.part{p};
+        catch
+            part = rec.annotation.part;
+        end
         segFile = sprintf(segImgSet, imgSet, name, part);
         oriFile = sprintf(oriImgSet, imgSet, name, part);
         fprintf('input: %s\n', segFile);

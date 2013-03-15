@@ -57,6 +57,7 @@ if isrbf
     end
 else % linear svm
     fprintf('searching for c and epsilon\n');
+    fprintf('training set size: %dx%d\n', size(trainSet, 1), size(trainSet, 2));
     bestcv = 0;
     for log10c = -5:1:5
         for log10e = -5:1:5

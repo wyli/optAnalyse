@@ -1,7 +1,6 @@
 function  cuboid = img2Cub(imgFile, segFile, windowSize, step)
 
-numOfSamples = 2000;
-fprintf('maximum sample per file: %d\n', numOfSamples);
+numOfSamples = 50;
 % load images and segmentations.
 load(imgFile);
 load(segFile);
@@ -10,8 +9,7 @@ load(segFile);
 [~, locations3d] = scanForPositiveSampleLocations(...
     segImg, windowSize, step);
 fprintf('Found %d positive locations\n', length(locations3d));
-randIndex = randsample(...
-    size(locations3d,1), min(size(locations3d,1), numOfSamples));
+randIndex = randsample(size(locations3d,1), min(size(locations3d,1), numOfSamples));
 fprintf('Randomly choose %d\n', min(size(locations3d,1), numOfSamples));
 cuboid = cell(2, size(randIndex,1));
 for loc = 1:size(randIndex,1)

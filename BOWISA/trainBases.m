@@ -44,7 +44,6 @@ for level = 1:2
         s = randsample(size(localPatches, 1),...
             min(size(localPatches, 1), 60000));
         localPatches = localPatches(s, :);
-        fprintf('randomly sample 40000 for kmeans\n');
         clusterPath = sprintf('%s/clusters.mat', baseSet);
 %        opts = statset('MaxIter', 500);
 %        fprintf('kmeans clustering ... %d\n', size(localPatches));
