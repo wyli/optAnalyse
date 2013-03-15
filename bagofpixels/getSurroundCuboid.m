@@ -12,6 +12,9 @@ try
         iStart(1):iEnd(1), iStart(2):iEnd(2), iStart(3):iEnd(3)));
 catch error
     warning('OPT:rejectLocation', error.identifier);
+    iStart
+    iEnd
+    sizeOfCuboid
     % clear cuboid
     cuboid = [];
 end

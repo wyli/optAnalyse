@@ -60,7 +60,7 @@ else
     fprintf('searching for C and epsilon\n');
     bestcv = 0;
     for log10c = -2:1:1
-        for log10e = -3:1:6
+        for log10e = -2:1:5
             cmd = ['-v 10 -s 1 -c ', num2str(10^log10c), ' -e ', num2str(10^log10e)]
             cv = train(trainLabels, sparse(trainSet), cmd);
             %cv = validateModel(...
@@ -78,9 +78,9 @@ else
 end
 bestCMD
 fprintf('%s predicting\n', datestr(now));
-testSet = [];
-testLabels = [];
 for i = 1:size(indexes{2}, 1)
+    testSet = [];
+    testLabels = [];
     rec = VOCreadxml([xmlSet '/' xmlFiles(indexes{2}(i)).name]);
     [labels, data] = loadDataset(rec, feaSet);
     testSet = [testSet; data];

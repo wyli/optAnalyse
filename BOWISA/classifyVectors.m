@@ -78,9 +78,9 @@ else
 end
 bestCMD
 fprintf('%s predicting\n', datestr(now));
-testSet = [];
-testLabels = [];
 for i = 1:size(indexes{2}, 1)
+    testSet = [];
+    testLabels = [];
     rec = VOCreadxml([xmlSet '/' xmlFiles(indexes{2}(i)).name]);
     [labels, data] = loadDataset(rec, feaSet);
     testSet = [testSet; data];
@@ -102,7 +102,7 @@ for i = 1:size(indexes{2}, 1)
     end
     fprintf('%s saving final result\n', datestr(now));
     resultFile = sprintf('%s/%s%s', resultSet, 'result', rec.annotation.index);
-    save(resultFile, 'prediction', 'accuracy', 'prob');
+    save(resultFile, 'prediction', 'accuracy', 'prob', 'rec');
 end
 %[Dtrain, Dtest] = compute_kernel_matrices(trainSet, testSet);
 %clear trainSet testSet;

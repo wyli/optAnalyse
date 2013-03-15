@@ -1,6 +1,6 @@
 function  cuboid = img2Cub(imgFile, segFile, windowSize, step)
 
-numOfSamples = 800;
+numOfSamples = 50;
 % load images and segmentations.
 load(imgFile);
 load(segFile);

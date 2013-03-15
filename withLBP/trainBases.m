@@ -4,7 +4,7 @@ function [] = trainBases(...
     % params
     global numOfSubsamples;
     numOfSubsamples = 2;
-    samplesPerFile = 800;
+    samplesPerFile = 470;
     subsamplesPerFile = numOfSubsamples * samplesPerFile;
     % input
     xmlFiles = dir([xmlSet '/*.xml']);
@@ -33,8 +33,8 @@ function [] = trainBases(...
         localSet((1+(i-1)*subsamplesPerFile):(i*subsamplesPerFile), :) =...
             localMat;
     end
-    assert(size(localSet, 1) > 40000, 'not enough samples');
-    r = randsample(size(localSet, 1), 40000);
+    assert(size(localSet, 1) > 20000, 'not enough samples');
+    r = randsample(size(localSet, 1), 20000);
     localSet = localSet(r, :);
 
     fprintf('doing kmeans on %d %d\n', size(localSet, 1), size(localSet, 2));

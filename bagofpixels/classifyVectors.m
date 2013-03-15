@@ -47,7 +47,7 @@ if isrbf
                 cModel, xmlSet, feaSet, indexes{2}, [maxTrain; minTrain]);
             if cv >= bestcv
                 bestcv = cv;
-                bestc = 2^log2c; 
+                bestc = 2^log2c;
                 bestg = 2^log2g;
                 bestCMD = ['-c ', num2str(bestc), ...
                     ' -g ', num2str(bestg) ' -b 1 -h 0'];
@@ -58,13 +58,13 @@ if isrbf
 else % linear svm
     fprintf('searching for c and epsilon\n');
     bestcv = 0;
-    for log10c = -2:1:1
-        for log10e = -3:1:6
+    for log10c = -5:1:5
+        for log10e = -5:1:5
             cmd = ['-v 10 -s 1 -c ', num2str(10^log10c),...
                 ' -e ', num2str(10^log10e)]
             cv = train(trainLabels, sparse(trainSet), cmd);
-
-            if cv >= bestcv
+            
+            if cv > bestcv
                 bestcv = cv;
                 bestCMD = ['-s 1 -c ', num2str(10^log10c),...
                     ' -e ', num2str(10^log10e)];
@@ -76,14 +76,14 @@ end
 fprintf('%s', bestCMD);
 
 fprintf('%s predicting\n', datestr(now));
-testSet = [];
-testLabels = [];
-for i = 1:size(indexes{3}, 1)
-    rec = VOCreadxml([xmlSet '/' xmlFiles(indexes{3}(i)).name]);
+for i = 1:size(indexes{2}, 1)
+    testSet = [];
+    testLabels = [];
+    rec = VOCreadxml([xmlSet '/' xmlFiles(indexes{2}(i)).name]);
     [labels, data] = loadDataset(rec, feaSet);
-    testSet = [testSet; data];
-    testLabels = [testLabels; labels];
-
+    testSet = data;
+    testLabels = labels;
+    
     if isScale
         fprintf('%s scaling test set\n', datestr(now));
         minTrain = min(trainSet, [], 1);
@@ -100,7 +100,7 @@ for i = 1:size(indexes{3}, 1)
     end
     fprintf('%s saving final result\n', datestr(now));
     resultFile = sprintf('%s/%s%s', resultSet, 'result', rec.annotation.index);
-    save(resultFile, 'prediction', 'accuracy', 'prob');
+    save(resultFile, 'prediction', 'accuracy', 'prob', 'rec');
 end
 %[Dtrain, Dtest] = compute_kernel_matrices(trainSet, testSet);
 %clear trainSet testSet;
@@ -111,7 +111,7 @@ end
 %w_pos = n_total/(2*n_pos);
 %w_neg = n_total/(2*n_neg);
 %option_string = sprintf('-t 4 -q -s 0 -b 1 -c %f -w1 %f -w0 %f',...
-    %cost, w_pos, w_neg);
+%cost, w_pos, w_neg);
 %model = svmtrain(trainLabels, trainSet, model, option_string);
 %[~, accuracy, prob_est] = svmpredict(testLabels, testSet, model, '-b 1');
 %save([output '/result1.mat'], 'prediction', 'accuracy', 'prob');

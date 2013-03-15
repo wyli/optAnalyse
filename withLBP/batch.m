@@ -12,7 +12,7 @@ needTrainBases = 1;
 needExtractFeatures = 1;
 needClassifyVectors = 1;
 
-id='19';
+id='13';
 baseFile = '~/desktop/output';
 if isempty(id)
     id = datestr(now, 30);
@@ -45,7 +45,7 @@ INCInd = INCInd(randperm(size(INCInd, 2)));
 allInd = zeros(1, size(files, 1));
 allInd(1, 1:2:end) = LGDInd;
 allInd(1, 2:2:end) = INCInd;
-% ten fold cross valid='19';
+% ten fold cross valid='13';
 k = 10;
 foldSize = 3;
 allInd = reshape(allInd, foldSize, []);
@@ -57,7 +57,7 @@ for f = 1:length(testScheme)
     trainInd = trainInd(:);
     testInd = allInd(:, f);
 
-    subSize=19;
+    subSize=13;
     step3d = 1;
     k = 200;
 
@@ -72,11 +72,11 @@ for f = 1:length(testScheme)
             trainInd, windowSize, subSize, step3d, k);
         catch ex1
             save('ex1', 'ex1');
-            exit;
+            %exit;
         end
     end
 
-    % extract features from train, valid='19';
+    % extract features from train, valid='13';
     feaSet = sprintf('%s/result_%d/feaSet', outputSet, f);
     if needExtractFeatures
         extractLBPFeatures(xmlSet, outputSet, baseSet, feaSet,...

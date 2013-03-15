@@ -34,10 +34,10 @@ imgSize = size(image3d);
 halfSize = ceil(wSize/2);
 imgSize = imgSize - halfSize;
 wStep = 3;
-xs = halfSize:wStep:(imgSize(1) - halfSize);
-if size(xs, 2) < 2
+xs = halfSize:wStep:imgSize(1);
+while size(xs, 2) < 1
     wStep = wStep - 1;
-    xs = halfSize:wStep:(imgSize(1) - halfSize);
+    xs = halfSize:wStep:imgSize(1);
 end
 [x y z] = meshgrid(xs, xs, xs);
 x = x(:);

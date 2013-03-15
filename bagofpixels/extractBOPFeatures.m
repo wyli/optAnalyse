@@ -1,5 +1,7 @@
 function [] = extractBOPFeatures(...
-        xmlSet, outputSet, baseSet, feaSet, windowSize, subSize, step3d)
+        xmlSet, outputSet, baseSet, feaSet, windowSize, subSize, step3d, randMat)
+global projMat
+projMat = randMat;
 fprintf('%s build histogram for each cuboid\n', datestr(now));
 % input 
 xmlFiles = dir([xmlSet '/*.xml']);
@@ -39,6 +41,7 @@ end
 end
 
 function histogram = cuboid2Hist(image3d, clusters, wSize, wStep)
+global projMat
 imgSize = size(image3d);
 halfSize = ceil(wSize/2);
 xs = halfSize:wStep:(imgSize(1) - halfSize);
@@ -54,6 +57,7 @@ for i = 1:size(localCuboid, 1)
         image3d, [x(i), y(i), z(i)], [wSize, wSize, wSize]);
     localCuboid(i, :) = sampleCell(:)';
 end
+localCuboid = (projMat*localCuboid')';
 D = dist2(localCuboid, clusters);
 [~, nearest] = min(D, [], 2);
 bins = 1:size(clusters, 1);
