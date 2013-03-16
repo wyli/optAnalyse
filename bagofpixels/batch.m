@@ -15,7 +15,7 @@ needClassifyVectors = 1;
 windowSize = 21;
 subSize = 9;
 step3d = 2;
-n=729;
+n=512;
 
 id = '9'; % for debugging
 baseFile = '~/Desktop/output';
