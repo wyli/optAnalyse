@@ -61,13 +61,13 @@ else % linear svm
     bestcv = 0;
     for log10c = -5:1:5
         for log10e = -5:1:5
-            cmd = ['-v 10 -s 1 -c ', num2str(10^log10c),...
+            cmd = ['-v 10 -s 2 -c ', num2str(10^log10c),...
                 ' -e ', num2str(10^log10e)]
             cv = train(trainLabels, sparse(trainSet), cmd);
             
             if cv > bestcv
                 bestcv = cv;
-                bestCMD = ['-s 1 -c ', num2str(10^log10c),...
+                bestCMD = ['-s 2 -c ', num2str(10^log10c),...
                     ' -e ', num2str(10^log10e)];
                 model = train(trainLabels, sparse(trainSet), bestCMD);
             end
