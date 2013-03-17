@@ -15,16 +15,17 @@ needClassifyVectors = 1;
 windowSize = 21;
 subSize = 9;
 step3d = 2;
-n=512;
+n=729;
+k = 100;
 
 id = '9'; % for debugging
 baseFile = '~/Desktop/output';
 
 if isempty(id)
     id = datestr(now, 30);
-    id = sprintf('%s_%d_%d', id, subSize, step3d);
+    id = sprintf('%s_%d_%d_%d', id, subSize, k, step3d);
 end
-outputSet = sprintf('%s/RP_%s_%d', baseFile, id, n);
+outputSet = sprintf('%s/RP_%s_%d_%d', baseFile, id, k, n);
 mkdir(outputSet);
 diary([outputSet '/exp.log']);
 fprintf('%s %s\n', datestr(now), 'starting batch...');
@@ -56,10 +57,10 @@ allInd(1, 1:2:end) = LGDInd;
 allInd(1, 2:2:end) = INCInd;
 
 if generate_scheme
-    k = 10;
+    kf = 10;
     foldSize = 6;
     allInd = reshape(allInd, foldSize, []);
-    testScheme = eye(k, 'int8');
+    testScheme = eye(kf, 'int8');
     save([outputSet '/exparam'], 'testScheme', 'allInd');
 else
     load([outputSet '/exparam']);
@@ -76,7 +77,6 @@ for f = 1:length(testScheme)
     testInd = allInd(:, f);
     testInd = testInd(testInd ~= 60);
 
-    k = 200;
 
     randMat = randn(n, subSize^3);
 
